@@ -84,8 +84,11 @@ if ($block=='sidebar')
 {
 	get_sidebar();
 	//overwrite (if not, sidebar query will return 404)
+	if(isset($modx->directParse) || $modx->directParse!=1)
+	{
 	header('HTTP/1.1 200 OK', true);
 	header('Status: 200 OK',  true);
+	}
 	return;
 }
 
