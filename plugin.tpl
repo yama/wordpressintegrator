@@ -5,7 +5,7 @@
  * WordPress Integrator
  *
  * @category 	plugin
- * @version 	1.2.3
+ * @version 	1.2.4
  * @license 	BSD (http://www.opensource.org/licenses/bsd-license.php)
  * @internal    @properties &wp_top_id=Blog top ID;text; &alias=WORDPRESS_ALIAS;text;blog &use_event=Use event;list;OnWebPageInit,OnPageNotFound;OnWebPageInit
  * @internal	@events OnWebPageInit, OnPageNotFound 
@@ -51,12 +51,11 @@
 define ('PAGE_WP_TOP', $wp_top_id);
 define ('WORDPRESS_ALIAS', $alias);
 
-$e = &$modx->event; 
-switch ($e->name)
+switch ($modx->event->name)
 {
 	case "OnWebPageInit":
 	if ($use_event!=='OnWebPageInit') return;
-		if (strpos($_REQUEST['q'], WORDPRESS_ALIAS)===0)
+		if (strpos($_SERVER['REQUEST_URI'], '/' . WORDPRESS_ALIAS)===0)
 		{
 			$this->documentMethod = 'id';
 			$this->documentIdentifier = PAGE_WP_TOP;
