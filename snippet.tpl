@@ -108,7 +108,7 @@ else
 // Placeholders
 $modx->setPlaceholder('wp_home',                 get_bloginfo('home'));
 $modx->setPlaceholder('wp_wpurl',                get_bloginfo('wpurl')); // WordPress admin URL
-$modx->setPlaceholder('wp_description',          get_bloginfo('description'));
+$modx->setPlaceholder('wp_description',          ($post->post_excerpt) ? $post->post_excerpt : get_bloginfo('description'));
 $modx->setPlaceholder('wp_rdf_url',              get_bloginfo('rdf_url'));
 $modx->setPlaceholder('wp_rss_url',              get_bloginfo('rss_url'));
 $modx->setPlaceholder('wp_rss2_url',             get_bloginfo('rss2_url'));
