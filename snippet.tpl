@@ -125,23 +125,34 @@ $modx->setPlaceholder('wp_name',                 get_bloginfo('name'));
 $title = wp_title('', false);
 $modx->setPlaceholder('wp_pagetitle', empty($title) ? WPMODX_TITLE : $title);
 
-// load template (/wp-includes/template-loader.php)
+if(!function_exists('load_tpl'))
+{
+    function load_tpl($path)
+    {
+    	$src = file_get_contents($path);
+    	$src = str_replace('get_header()', 'null', $src);
+    	$src = str_replace('get_footer()', 'null', $src);
+    	$src = str_replace('get_sidebar()', 'null', $src);
+    	eval('?>'.$src.'<?');
+    }
+}
 
-$wxi = new WPMODX_INTEGRATOR();
+// load template (/wp-includes/template-loader.php)
 
 if(is_feed())          {$doing_rss = 1;  include( WPMODX_WP_PATH . 'wp-feed.php');  exit;}
 elseif(is_trackback()) {include( WPMODX_WP_PATH . 'wp-trackback.php');  exit;}
-elseif(is_404()        && $tpl_path = get_404_template())        {$wxi->load_tpl($tpl_path);}
-elseif(is_search()     && $tpl_path = get_search_template())     {$wxi->load_tpl($tpl_path);}
-elseif(is_home()       && $tpl_path = get_home_template())       {$wxi->load_tpl($tpl_path);}
-elseif(is_attachment() && $tpl_path = get_attachment_template()) {$wxi->load_tpl($tpl_path);}
+elseif(is_404()        && $tpl_path = get_404_template())        {$modx->sendErrorPage();exit;}//load_tpl($tpl_path);
+elseif(is_tag()        && $tpl_path = get_tag_template())        {load_tpl($tpl_path);}
+elseif(is_search()     && $tpl_path = get_search_template())     {load_tpl($tpl_path);}
+elseif(is_home()       && $tpl_path = get_home_template())       {load_tpl($tpl_path);}
+elseif(is_attachment() && $tpl_path = get_attachment_template()) {load_tpl($tpl_path);}
 elseif(is_single()     && $tpl_path = get_single_template())
 {
 	if(is_attachment())
 	{
 		add_filter('the_content', 'prepend_attachment');
 	}
-	                                                              $wxi->load_tpl($tpl_path);
+	                                                              load_tpl($tpl_path);
 }
 elseif(is_page()       && $tpl_path = get_page_template())
 {
@@ -149,36 +160,27 @@ elseif(is_page()       && $tpl_path = get_page_template())
 	{
 		add_filter('the_content', 'prepend_attachment');
 	}
-	                                                              $wxi->load_tpl($tpl_path);
+	                                                              load_tpl($tpl_path);
 }
-elseif(is_category()   && $tpl_path = get_category_template())   {$wxi->load_tpl($tpl_path);}
-elseif(is_author()     && $tpl_path = get_author_template())     {$wxi->load_tpl($tpl_path);}
-elseif(is_date()       && $tpl_path = get_date_template())       {$wxi->load_tpl($tpl_path);}
-elseif(is_archive()    && $tpl_path = get_archive_template())    {$wxi->load_tpl($tpl_path);}
-elseif(is_comments_popup() && $tpl_path = get_comments_popup_template()) {$wxi->load_tpl($tpl_path);}
-elseif(is_paged()      && $tpl_path = get_paged_template())      {$wxi->load_tpl($tpl_path);}
+elseif(is_category()   && $tpl_path = get_category_template())   {load_tpl($tpl_path);}
+elseif(is_author()     && $tpl_path = get_author_template())     {load_tpl($tpl_path);}
+elseif(is_date()       && $tpl_path = get_date_template())       {load_tpl($tpl_path);}
+elseif(is_archive()    && $tpl_path = get_archive_template())
+{
+	if(have_posts())
+	{
+		load_tpl($tpl_path);
+	}
+	else $modx->sendErrorPage();
+}
+elseif(is_comments_popup() && $tpl_path = get_comments_popup_template()) {load_tpl($tpl_path);}
+elseif(is_paged()      && $tpl_path = get_paged_template())      {load_tpl($tpl_path);}
 elseif(file_exists(TEMPLATEPATH . '/index.php'))
 {
 	if(is_attachment())
 	{
 		add_filter('the_content', 'prepend_attachment');
 	}
-	                                                              $wxi->load_tpl(TEMPLATEPATH . '/index.php');
-}
-
-
-class WPMODX_INTEGRATOR
-{
-	function WPMODX_INTEGRATOR()
-	{
+	load_tpl(TEMPLATEPATH . '/index.php');
 	}
-	
-	function load_tpl($path)
-	{
-		$src = file_get_contents($path);
-		$src = str_replace('get_header()', 'null', $src);
-		$src = str_replace('get_footer()', 'null', $src);
-		$src = str_replace('get_sidebar()', 'null', $src);
-		eval('?>'.$src.'<?');
-	}
-}
+?>
