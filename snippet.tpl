@@ -126,7 +126,7 @@ $modx->setPlaceholder('wp_version',              get_bloginfo('version'));
 $modx->setPlaceholder('wp_name',                 get_bloginfo('name'));
 
 $title = wp_title('', false);
-$modx->setPlaceholder('wp_pagetitle', empty($title) ? WPMODX_TITLE : $title);
+$modx->setPlaceholder('wp_pagetitle', empty($title) ? WPMODX_TITLE : trim($title));
 
 if(!function_exists('load_tpl'))
 {
