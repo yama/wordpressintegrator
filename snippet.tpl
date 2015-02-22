@@ -4,11 +4,11 @@
  * 
  * WordPress Integrator
  *
- * @category 	snippet
- * @version 	1.2.3
- * @license 	BSD (http://www.opensource.org/licenses/bsd-license.php)
+ * @category    snippet
+ * @version     1.2.3
+ * @license     BSD (http://www.opensource.org/licenses/bsd-license.php)
  * @internal    @properties &wp_path=WP_PATH;text;wp
- * @internal	@modx_category Content
+ * @internal    @modx_category Content
  * 
  * Copyright 2006 uglydog, http://nanabit.net/
  * 
@@ -74,35 +74,35 @@ global $wp_embed, $wp_widget_factory, $wp_taxonomies;
 define ('WP_USE_THEMES', false);
 if(!isset($wp_did_header))
 {
-	$wp_did_header = true;
-	require_once( WPMODX_WP_PATH . 'wp-config.php');
-	wp();
+    $wp_did_header = true;
+    require_once( WPMODX_WP_PATH . 'wp-config.php');
+    wp();
 }
 
 // sidebar
 if ($block=='sidebar')
 {
-	get_sidebar();
-	//overwrite (if not, sidebar query will return 404)
-	if(isset($modx->directParse) || $modx->directParse!=1)
-	{
-	header('HTTP/1.1 200 OK', true);
-	header('Status: 200 OK',  true);
-	}
-	return;
+    get_sidebar();
+    //overwrite (if not, sidebar query will return 404)
+    if(isset($modx->directParse) || $modx->directParse!=1)
+    {
+        header('HTTP/1.1 200 OK', true);
+        header('Status: 200 OK',  true);
+    }
+    return;
 }
 
 // latest
 if ($block=='latest')
 {
-	$wp_query->set('posts_per_page', 1);
-	$wp_query->set('what_to_show', 'posts');
-	$posts = $wp_query->get_posts();
-	$paged = 0.1; // ugly hack. ref: link-template.php
+    $wp_query->set('posts_per_page', 1);
+    $wp_query->set('what_to_show', 'posts');
+    $posts = $wp_query->get_posts();
+    $paged = 0.1; // ugly hack. ref: link-template.php
 }
 else
 {
-	$posts = $wp_query->get_posts();
+    $posts = $wp_query->get_posts();
 }
 
 // Placeholders
@@ -132,11 +132,11 @@ if(!function_exists('load_tpl'))
 {
     function load_tpl($path)
     {
-    	$src = file_get_contents($path);
-    	$src = str_replace('get_header()', 'null', $src);
-    	$src = str_replace('get_footer()', 'null', $src);
-    	$src = str_replace('get_sidebar()', 'null', $src);
-    	eval('?>'.$src.'<?');
+        $src = file_get_contents($path);
+        $src = str_replace('get_header()', 'null', $src);
+        $src = str_replace('get_footer()', 'null', $src);
+        $src = str_replace('get_sidebar()', 'null', $src);
+        eval('?>'.$src.'<?');
     }
 }
 
@@ -151,39 +151,32 @@ elseif(is_home()       && $tpl_path = get_home_template())       {load_tpl($tpl_
 elseif(is_attachment() && $tpl_path = get_attachment_template()) {load_tpl($tpl_path);}
 elseif(is_single()     && $tpl_path = get_single_template())
 {
-	if(is_attachment())
-	{
-		add_filter('the_content', 'prepend_attachment');
-	}
-	                                                              load_tpl($tpl_path);
+    if(is_attachment())
+    {
+        add_filter('the_content', 'prepend_attachment');
+    }
+                                                                  load_tpl($tpl_path);
 }
 elseif(is_page()       && $tpl_path = get_page_template())
 {
-	if(is_attachment())
-	{
-		add_filter('the_content', 'prepend_attachment');
-	}
-	                                                              load_tpl($tpl_path);
+    if(is_attachment())
+    {
+        add_filter('the_content', 'prepend_attachment');
+    }
+                                                                  load_tpl($tpl_path);
 }
 elseif(is_category()   && $tpl_path = get_category_template())   {load_tpl($tpl_path);}
 elseif(is_author()     && $tpl_path = get_author_template())     {load_tpl($tpl_path);}
 elseif(is_date()       && $tpl_path = get_date_template())       {load_tpl($tpl_path);}
 elseif(is_archive()    && $tpl_path = get_archive_template())
 {
-	if(have_posts())
-	{
-		load_tpl($tpl_path);
-	}
-	else $modx->sendErrorPage();
+    if(have_posts())                                              load_tpl($tpl_path);
+    else $modx->sendErrorPage();
 }
 elseif(is_comments_popup() && $tpl_path = get_comments_popup_template()) {load_tpl($tpl_path);}
 elseif(is_paged()      && $tpl_path = get_paged_template())      {load_tpl($tpl_path);}
 elseif(file_exists(TEMPLATEPATH . '/index.php'))
 {
-	if(is_attachment())
-	{
-		add_filter('the_content', 'prepend_attachment');
-	}
-	load_tpl(TEMPLATEPATH . '/index.php');
-	}
-?>
+    if(is_attachment()) add_filter('the_content', 'prepend_attachment');
+    load_tpl(TEMPLATEPATH . '/index.php');
+}
