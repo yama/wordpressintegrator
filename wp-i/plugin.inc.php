@@ -47,4 +47,30 @@
     (id=[PAGE_POST], [PAGE_CATEGORY], ..) in proper way.
 */
 
-include_once 'wp-i/plugin.inc.php';
+// the ID and alias of document where WordPressIntegrator snippet exists.
+define ('PAGE_WP_TOP', $wp_top_id);
+define ('WORDPRESS_ALIAS', $alias);
+
+switch ($modx->event->name)
+{
+	case "OnWebPageInit":
+	if ($use_event!=='OnWebPageInit') return;
+		if (strpos($_SERVER['REQUEST_URI'], '/' . WORDPRESS_ALIAS)===0)
+		{
+			$this->documentMethod = 'id';
+			$this->documentIdentifier = PAGE_WP_TOP;
+			$_REQUEST['q'] = $_GET['q'] = str_replace(WORDPRESS_ALIAS.'/', '', $_REQUEST['q']);
+		}
+		return;
+	
+	case "OnPageNotFound":
+	if ($use_event!=='OnPageNotFound') return;
+	if(preg_match("@^".WORDPRESS_ALIAS."/@", $_REQUEST['q']))
+	{
+		$modx->sendforward(PAGE_WP_TOP);
+	}
+		return;
+	
+	default:
+		return; // stop here
+}
