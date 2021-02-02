@@ -92,17 +92,13 @@ if ($block=='sidebar')
     return;
 }
 
+$posts = $wp_query->get_posts();
 // latest
 if ($block=='latest')
 {
     $wp_query->set('posts_per_page', 1);
     $wp_query->set('what_to_show', 'posts');
-    $posts = $wp_query->get_posts();
     $paged = 0.1; // ugly hack. ref: link-template.php
-}
-else
-{
-    $posts = $wp_query->get_posts();
 }
 
 // Placeholders
@@ -128,18 +124,6 @@ $modx->setPlaceholder('wp_name',                 get_bloginfo('name'));
 $title = wp_title('', false);
 $modx->setPlaceholder('wp_pagetitle', empty($title) ? WPMODX_TITLE : trim($title));
 
-if(!function_exists('load_tpl'))
-{
-    function load_tpl($path)
-    {
-        $src = file_get_contents($path);
-        $src = str_replace('get_header()', 'null', $src);
-        $src = str_replace('get_footer()', 'null', $src);
-        $src = str_replace('get_sidebar()', 'null', $src);
-        eval('?>'.$src.'<?');
-    }
-}
-
 // load template (/wp-includes/template-loader.php)
 
 if(is_feed())          {$doing_rss = 1;  include( WPMODX_WP_PATH . 'wp-feed.php');  exit;}
@@ -155,7 +139,7 @@ elseif(is_single()     && $tpl_path = get_single_template())
     {
         add_filter('the_content', 'prepend_attachment');
     }
-                                                                  load_tpl($tpl_path);
+    load_tpl($tpl_path);
 }
 elseif(is_page()       && $tpl_path = get_page_template())
 {
@@ -163,7 +147,7 @@ elseif(is_page()       && $tpl_path = get_page_template())
     {
         add_filter('the_content', 'prepend_attachment');
     }
-                                                                  load_tpl($tpl_path);
+    load_tpl($tpl_path);
 }
 elseif(is_category()   && $tpl_path = get_category_template())   {load_tpl($tpl_path);}
 elseif(is_author()     && $tpl_path = get_author_template())     {load_tpl($tpl_path);}
@@ -179,4 +163,16 @@ elseif(file_exists(TEMPLATEPATH . '/index.php'))
 {
     if(is_attachment()) add_filter('the_content', 'prepend_attachment');
     load_tpl(TEMPLATEPATH . '/index.php');
+}
+
+if(!function_exists('load_tpl'))
+{
+    function load_tpl($path)
+    {
+        $src = file_get_contents($path);
+        $src = str_replace('get_header()', 'null', $src);
+        $src = str_replace('get_footer()', 'null', $src);
+        $src = str_replace('get_sidebar()', 'null', $src);
+        eval('?>'.$src.'<?');
+    }
 }

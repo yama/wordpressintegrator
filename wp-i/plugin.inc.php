@@ -29,20 +29,19 @@
  *  naka (original idea of Hook WordPress)
  **************************************/
 /*
- Installation:
- 1. replace all =& to = in wp-settings.php
- 2. with a higher version than WP 2.1.3, grep all "global $..." in WP source codes,
-    and add them to WordPress Integrator (if not exists).
- 
- Without Alias Path:
-    use WordPressRouter or HookWordPress.
- 
- With Alias Path:
-    use HookWordPress. (place it in the 404 document.)
+	Installation:
+	with a higher version than WP 2.1.3, grep all "global $..." in WP source codes,
+		and add them to WordPress Integrator (if not exists).
+	
+	Without Alias Path:
+		use WordPressRouter or HookWordPress.
+	
+	With Alias Path:
+		use HookWordPress. (place it in the 404 document.)
 */
 /*
-  Configuration:
-  
+	Configuration:
+	
     retrives the friendly URL and pass it to WordPress Snippet
     (id=[PAGE_POST], [PAGE_CATEGORY], ..) in proper way.
 */
